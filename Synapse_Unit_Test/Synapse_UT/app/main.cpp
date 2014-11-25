@@ -51,17 +51,17 @@ int main()
    // method.Explicit_Scheme(U_Ex, alpha, n, m, dx, t_final);
 
     Implicit solve;
-    solve.Implicit_Scheme(U_Im, alpha, n, m, dx, t_final);
+   // solve.Implicit_Scheme(U_Im, alpha, n, m, dx, t_final);
 
     Crank_Nicolson result;
    // result.Crank_Nicolson_Scheme(V_CN, alpha, n, m, dx);
 
 
     Monte_Carlo flip;
-   // flip.Monte_Carlo_boxes(n, dx, dt, t_final);
+    flip.Monte_Carlo_boxes(n, dx, dt, t_final);
 
     Closed_form test;
-    test.Closed_form_solution(n, m, t_final/20, dx);
+   // test.Closed_form_solution(n, m, t_final/20, dx);
 
     cout<<"The end"<<endl;
     cout<<"End MC"<<endl;
