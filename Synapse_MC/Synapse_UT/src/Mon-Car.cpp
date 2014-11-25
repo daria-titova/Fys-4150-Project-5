@@ -166,7 +166,7 @@ void Monte_Carlo::Monte_Carlo_Gauss_boxes(int n, double dt)
 {
     cout<<"Start MC"<<endl;
 
-    int N=10000; //the number of particles in x_0
+    int N=500; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
