@@ -58,7 +58,7 @@ int main()
 
 
     Monte_Carlo flip;
-    flip.Monte_Carlo_boxes(n, dx, dt, t_final);
+    flip.Monte_Carlo_boxes_Gauss(n, dx, dt);
 
     Closed_form test;
    // test.Closed_form_solution(n, m, t_final/20, dx);

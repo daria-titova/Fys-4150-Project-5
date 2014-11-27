@@ -45,7 +45,8 @@ void Implicit::Implicit_Scheme (mat &U, double alpha, int n, int m, double dx, d
        myfile.open ("Implicit.txt");
        for (int i=0; i<m; i++) {
           for (int j=0; j<m; j++)
-          myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;}
+          myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
+       myfile<<endl; }
           myfile.close();
 
    return;

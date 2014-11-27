@@ -24,7 +24,7 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
 
 
 
-/*    for (int i=0; i<m; i++){
+    for (int i=0; i<m; i++){
         for (int j=0; j<m; j++) {
         double sum=0.0;
         for (int l=0; l<k-1; l++) {
@@ -33,20 +33,21 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
         U(i,j)=1.0-i*dx-sum;
         }}
 
-    U(m-1,m-1)=0.0;     //for the sace of printing*/
+    U(m-1,m-1)=0.0;     //for the sace of printing
    // U.print("Closed_form=");
 
-    for (int i=0; i<m; i++){
+   /* for (int i=0; i<m; i++){
             for (int j=0; j<m; j++) {
                 U(i,j)=(1-j*dx)*exp(i*dx+t);
-            }}
+            }}*/
 
 
     ofstream myfile;
     myfile.open ("Closed.txt");
     for (int i=0; i<m; i++){
         for (int j=0; j<m; j++)
-           myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;}
+           myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
+        myfile<<endl;   }
        myfile.close();
 
 }

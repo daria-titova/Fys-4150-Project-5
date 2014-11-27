@@ -9,11 +9,14 @@ SOURCES += tridiag.cpp \
     Cra-Nic.cpp \
     Explicit.cpp \
     Implicit.cpp \
-    Mon-Car.cpp
+    Mon-Car.cpp \
+    Random.cpp
+QMAKE_CXXFLAGS += -std=c++0x
 HEADERS += tridiag.h \
     Closed_form.h \
     Cra-Nic.h \
     Explicit.h \
     Implicit.h \
-    Mon-Car.h
+    Mon-Car.h \
+    Random.h
 
