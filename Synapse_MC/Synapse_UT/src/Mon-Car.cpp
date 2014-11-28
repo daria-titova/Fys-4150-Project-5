@@ -15,7 +15,7 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 {
     cout<<"Start MC"<<endl;
 
-    int N=100; //the number of particles in x_0
+    int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
@@ -80,7 +80,11 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
        ofstream myfile;
        myfile.open ("Mon-Car.txt");
        for (int i=0; i<u.size(); i++)
-          myfile <<u[i]<<endl;
+       {
+           if (u[i]==0) u[i]+=0;
+           else
+               myfile <<u[i]<<endl;
+       }
        myfile.close();
 return;}
 
@@ -96,7 +100,7 @@ void Monte_Carlo::Monte_Carlo_Algo(int n, double dt)
 {
     cout<<"Start MC"<<endl;
 
-    int N=10000; //the number of particles in x_0
+    int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
@@ -153,7 +157,7 @@ void Monte_Carlo::Monte_Carlo_Algo(int n, double dt)
        ofstream myfile;
        myfile.open ("Mon-Car.txt");
        for (int i=0; i<u.size(); i++)
-          myfile <<i*lo<<" "<<((double) u[i]/N)<<endl;
+          myfile <<i*lo<<" "<<((double) u[i])<<endl;
           myfile.close();
 return;}
 
@@ -166,14 +170,14 @@ void Monte_Carlo::Monte_Carlo_Gauss_boxes(int n, double dt)
 {
     cout<<"Start MC"<<endl;
 
-    int N=500; //the number of particles in x_0
+    int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
     cout<<"1/lo="<<1/lo<<endl;
 
     int m;
-    m=1/lo+0;
+    m=1/lo+1;
     cout<<"m="<<m<<endl;
     double dm=1/m;
 
@@ -227,7 +231,7 @@ void Monte_Carlo::Monte_Carlo_Gauss_boxes(int n, double dt)
 
 
        ofstream myfile;
-       myfile.open ("Mon-Car.txt");
+       myfile.open ("Mon-Car_Gauss.txt");
        for (int i=0; i<u.size(); i++)
            myfile <<(i)*lo<<" "<<(u[i])<<endl;
         myfile.close();
@@ -306,7 +310,7 @@ void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
         // {cout << (double) u[i] <<endl;}
 
        ofstream myfile;
-       myfile.open ("Mon-Car.txt");
+       myfile.open ("Mon-Car_Gauss_vec.txt");
        for (int i=0; i<u.size(); i++)
        {if (u[i]==0) u[i]+=0;
          else myfile <<u[i]<<endl;}

@@ -15,7 +15,7 @@ void Explicit::Explicit_Scheme (mat &U, double alpha, int n, int m, double dx, d
     mat U_new(m,m);
     U_new.zeros();
 
-    while (k<n){
+ /*   while (k<n){
     for (int i=0; i<m; i++) {
       for (int j=0; j<m; j++)
            {
@@ -28,23 +28,22 @@ void Explicit::Explicit_Scheme (mat &U, double alpha, int n, int m, double dx, d
                       else U_new(i,j)=U(i,j) + alpha*(U(i+1,j) + U(i-1,j) + U(i,j+1) + U(i,j-1) - 4*U(i,j));}
                     }
               }
-            }} U=U_new; k++;}
+            }} U=U_new; k++;}*/
 
-   /* while (k<n){
-        for (int i=0; i<m; i++) { if (i==0)
-            {
-                for (int j=0; j<m; j++)
-                { if (i==0) U_new(i,j)=1.0; }
-            }  //boundary condition
-
-            else { if (i==(m-1))  {for (int j=0; j<m; j++) U_new(i,j)=0.0;}  //boundary condition
-                else {for (int j=0; j<m; j++) U_new(i,j)=U(i,j) + alpha*(U(i+1,j) + U(i-1,j) + U(i,j+1) + U(i,j-1) - 4*U(i,j));}
-              }  }   U=U_new; k++;}*/
+    while (k<n){
+        for (int i=0; i<m; i++)
+            {for (int j=0; j<m; j++)
+                {   if (i==0) U_new(i,j)=1.0;      //boundary condition
+                    else{ if (i==(m-1)) U_new(i,j)=0.0;  //boundary condition
+                        else {if (j==0) U_new(i,j)=U(i,j) + alpha*(U(i+1,j) + U(i-1,j) + 2*U(i,j+1) - 4*U(i,j));
+                            else {if (j==m-1) U_new(i,j)=U(i,j) + alpha*(U(i+1,j) + U(i-1,j) + 2*U(i,j-1) - 4*U(i,j));
+                                    else U_new(i,j)=U(i,j) + alpha*(U(i+1,j) + U(i-1,j) + U(i,j+1) + U(i,j-1) - 4*U(i,j));}
+                              }}}}   U=U_new; k++;}
 
    // V.print("Explicit=");
 
     ofstream myfile;
-    myfile.open ("Explicit_2D.txt");
+    myfile.open ("Explicit.txt");
     for (int i=0; i<m; i++) {
        for (int j=0; j<m; j++)
        myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;

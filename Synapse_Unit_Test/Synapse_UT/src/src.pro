@@ -12,6 +12,8 @@ SOURCES += tridiag.cpp \
     Mon-Car.cpp \
     Random.cpp
 QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS+= -openmp
+QMAKE_LFLAGS +=  -openmp
 HEADERS += tridiag.h \
     Closed_form.h \
     Cra-Nic.h \

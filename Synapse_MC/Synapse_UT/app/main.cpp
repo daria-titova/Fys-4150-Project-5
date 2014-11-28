@@ -53,12 +53,15 @@ int main()
     Crank_Nicolson result;
    // result.Crank_Nicolson_Scheme(V_CN, alpha, n, m, dx);
 
-    Monte_Carlo die_is_cast;
-   // die_is_cast.Monte_Carlo_Algo(n, dt);
-    Monte_Carlo Gauss;
- //  Gauss.Monte_Carlo_Gauss(n, dt);
-    Monte_Carlo exp;
-    exp.Monte_Carlo_Gauss_boxes(n, dt);
+    Monte_Carlo dies;
+    dies.Monte_Carlo_Algo(n, dt);
+
+    Monte_Carlo flip;
+    flip.Monte_Carlo_Gauss_boxes(n, dt);
+
+    Monte_Carlo one_more;
+    one_more.Monte_Carlo_Gauss_vector(n, dt);
+
 
     Closed_form test;
    // test.Closed_form_solution(n, m, t_final, dx);
