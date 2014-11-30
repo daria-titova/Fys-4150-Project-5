@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <initialize.h>
 using namespace arma;
 using namespace std;
 
@@ -28,13 +29,8 @@ void Explicit::Explicit_Scheme (vec &V, double alpha, int n, int m, double dx)
         } V=V_new;
     j++;}
 
-   // V.print("Explicit=");
-
-    ofstream myfile;
-    myfile.open ("Explicit.txt");
-    for (int i=0; i<m; i++)
-       myfile <<i*dx<<" "<<V(i)<<endl;
-       myfile.close();
+    Initialize data;
+    data.print_out("Explicit.txt", V, m, dx);
 
    return;
 }

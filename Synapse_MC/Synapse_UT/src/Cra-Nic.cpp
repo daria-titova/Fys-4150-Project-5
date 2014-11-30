@@ -3,6 +3,7 @@
 #include <Cra-Nic.h>
 #include <tridiag.h>
 #include <armadillo>
+#include <initialize.h>
 using namespace std;
 using namespace arma;
 
@@ -43,18 +44,11 @@ void Crank_Nicolson::Crank_Nicolson_Scheme(vec &V, double alpha, int n, int m, d
 
                  for (int k=0; k<m-2; k++)
                  {V(k+1)=U(k);}
-
          V(m-1)=0.0;
+      j++;}
 
-    j++;}
-
-   // V.print("Crank-Nicolson=");
-
-    ofstream myfile;
-    myfile.open ("Cra-Nic.txt");
-    for (int i=0; i<m; i++)
-       myfile <<i*dx<<" "<<V(i)<<endl;
-       myfile.close();
+    Initialize data;
+    data.print_out("Cra-Nic.txt", V, m, dx);
 
 return;}
 

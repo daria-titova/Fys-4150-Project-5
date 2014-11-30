@@ -3,124 +3,39 @@
 #include <Mon-Car.h>
 #include <armadillo>
 #include <vector>
-#include <random.h>
 #include <Random_Gauss.h>
+#include <initialize.h>
 using std::vector;
 using namespace std;
 using namespace arma;
 
 Monte_Carlo::Monte_Carlo(){}
 
-void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
-{
-    cout<<"Start MC"<<endl;
 
+void Monte_Carlo::Monte_Carlo_boxes(int n, double dt)
+{
     int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
+    int m=1/lo;
     cout<<"lo="<<lo<<endl;
-    cout<<"m="<<1/lo<<endl;
+    cout<<"m="<<m<<endl;   //the number of boxes
 
 
-    vector<double> u(N,0);
-
-    int time=0;
-    while (time < n) {
-
-
-        for(int i = 0; i < u.size(); ++i)
-        { double epsilon = (double)((double)rand() / (RAND_MAX));
-            if (epsilon <= 0.5) {
-
-                  if (u[i]==0.0) {
-                      u[i]+=0;
-                  } else {
-                      if ((u[i]-lo)<=0.0)
-                      {
-                          //u[i]+=0;
-                          u.erase(u.begin()+(i));
-                          i=i-1;
-                      }
-                      else
-                      {   u.insert(u.begin()+i, u[i]-lo);
-                          u.erase(u.begin()+(i+1));
-
-                           }
-                  }
-
-            } else {
-                if ((u[i]+lo)>=1.0)
-                {
-                    u.erase(u.begin()+(i));
-                    i-=1;
-                }
-                else {
-                    if (u[i]==0.0) {
-                       // u.insert(i, 0.0);
-                        u.push_back(u[i]+lo);
-                        }
-                    else
-                    {
-
-                        u.push_back(u[i]+lo);
-                        u.erase(u.begin()+(i));
-                        i-=1;
-
-                        }
-                }}  }   //thus we've made some moves
-             time++;// cout<<"Next time step"<<time<<endl;
-    }
-
-    cout<<"End MC"<<endl;
-
-
-        // for(int i = 0; i < u.size(); ++i)
-        // {cout << (double) u[i] <<endl;}
-
-       ofstream myfile;
-       myfile.open ("Mon-Car.txt");
-       for (int i=0; i<u.size(); i++)
-       {
-           if (u[i]==0) u[i]+=0;
-           else
-               myfile <<u[i]<<endl;
-       }
-       myfile.close();
-return;}
-
-
-
-
-
-
-
-
-
-void Monte_Carlo::Monte_Carlo_Algo(int n, double dt)
-{
-    cout<<"Start MC"<<endl;
-
-    int N=1000; //the number of particles in x_0
-    double D=1.0;
-    double lo=sqrt(2*D*dt);
-    cout<<"lo="<<lo<<endl;
-    cout<<"m="<<1/lo<<endl;
-
-
-    vector<int> u(1/lo,0);
-    u[0]=N;
+    vector<int> u(m,0);    //the vector of boxes
+    u[0]=N;                //N walkers in the first box (initial condition)
 
 
     int time=0;
     while (time < n) {
 
-
-        for(int i = 0; i < u.size(); ++i)
+        for(int i = 0; i < u.size(); i++)
         { int l=u[i];
             for (int j=0; j<l; j++)
-           {double epsilon = (double)((double)rand() / (RAND_MAX));
-            if (epsilon <= 0.5) {
+           {// epsilon is random between [0;1]
+            double epsilon = (double)((double)rand() / (RAND_MAX));
 
+            if (epsilon <= 0.5) {
                   if (i==0) {
                       u[i]+=0;
                   } else {
@@ -131,8 +46,8 @@ void Monte_Carlo::Monte_Carlo_Algo(int n, double dt)
                   }
 
             } else {
-                if (i+1 >= 1.0/lo)
-                    u[i]+=0;
+                if (i+1 >= m)
+                    u[i]-=1;
                 else {
                     if (i==0) {
                         u[i+1]+=1;
@@ -144,23 +59,76 @@ void Monte_Carlo::Monte_Carlo_Algo(int n, double dt)
                         u[i+1]+=1;
                         l=u[i];
                     }
-                }}  }   //thus we've made some moves
-             }time++;// cout<<"Next time step"<<time<<endl;
-    }
+                }}  }
+             }time++;}
 
-    cout<<"End MC"<<endl;
+    ofstream myfile;
+       myfile.open ("Mon-Car.txt");
+       for (int i=0; i<u.size(); i++)
+          myfile <<i*lo<<" "<<((double) u[i]/N)<<endl;
+          myfile.close();
+return;}
 
 
-    //   for(int i = 0; i < u.size(); ++i)
-    //   {cout << (double) u[i]/N <<endl;}
+
+void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
+{
+    int N=10; //the number of particles in x_0
+    double D=1.0;
+    double lo=sqrt(2*D*dt);
+    cout<<"lo="<<lo<<endl;
+    cout<<"m="<<1/lo<<endl;  //the number of boxes for the histogram
+
+    vector<double> u(N,0);
+
+    int time=0;
+    while (time < n) {
+
+        for(int i = 0; i < u.size(); ++i)
+        { //epsilon is random [0;1]
+            double epsilon = (double)((double)rand() / (RAND_MAX));
+            if (epsilon <= 0.5) {
+
+                  if (u[i]==0.0) {
+                      u[i]+=0;
+                  } else {
+                      if ((u[i]-lo)<=0.0)
+                      {   u.erase(u.begin()+(i));
+                          i=i-1;
+                      }
+                      else
+                      {   u.insert(u.begin(), u[i]-lo);
+                          u.erase(u.begin()+(i+1));
+                           }
+                  }
+            } else {
+                if ((u[i]+lo)>=1.0)
+                {
+                    u.erase(u.begin()+(i));
+                    i-=1;
+                }
+                else {
+                    if (u[i]==0.0) {
+                        u.insert(u.begin(), u[i]+lo);
+                       // u.push_back(u[i]+lo);
+                        i+=1;
+                        }
+                    else
+                    {
+                        //u.push_back(u[i]+lo);
+                        u.insert(u.begin(), u[i]+lo);
+                        u.erase(u.begin()+(i+1));
+                        }
+                }}  }
+             time++; }
 
        ofstream myfile;
        myfile.open ("Mon-Car.txt");
        for (int i=0; i<u.size(); i++)
-          myfile <<i*lo<<" "<<((double) u[i])<<endl;
-          myfile.close();
+          { if (u[i]==0) u[i]+=0;
+            else  myfile <<u[i]<<endl; }
+       myfile.close();
 return;}
-
 
 
 
@@ -168,8 +136,6 @@ return;}
 
 void Monte_Carlo::Monte_Carlo_Gauss_boxes(int n, double dt)
 {
-    cout<<"Start MC"<<endl;
-
     int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
@@ -227,9 +193,6 @@ void Monte_Carlo::Monte_Carlo_Gauss_boxes(int n, double dt)
              }
         time++; }
 
-       cout<<"End MC"<<endl;
-
-
        ofstream myfile;
        myfile.open ("Mon-Car_Gauss.txt");
        for (int i=0; i<u.size(); i++)
@@ -246,9 +209,7 @@ return;}
 
 void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
 {
-    cout<<"Start MC"<<endl;
-
-    int N=1000; //the number of particles in x_0
+    int N=2000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
@@ -299,23 +260,16 @@ void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
                         i-=1;
 
                         }
-                }}  }   //thus we've made some moves
-             time++;// cout<<"Next time step"<<time<<endl;
-    }
-
-    cout<<"End MC"<<endl;
-
-
-        // for(int i = 0; i < u.size(); ++i)
-        // {cout << (double) u[i] <<endl;}
+                }}  }
+             time++; }
 
        ofstream myfile;
        myfile.open ("Mon-Car_Gauss_vec.txt");
        for (int i=0; i<u.size(); i++)
        {if (u[i]==0) u[i]+=0;
          else myfile <<u[i]<<endl;}
-        //  myfile <<u[i]<<endl;
        myfile.close();
+
 return;}
 
 

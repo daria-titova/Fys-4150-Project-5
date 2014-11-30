@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <initialize.h>
 using namespace arma;
 using namespace std;
 
@@ -17,7 +18,7 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
     //we choose k to be like this in order to avoid the case when
     //when the exponent in the closed-form solution is not decreasing
     //when t<<1,
-    //viz. to kill the exponent in order to get steady-state
+    //viz. to kill the sin in order to get steady-state
     //
     if (t<1) k=1/t;
     else k=n;
@@ -32,13 +33,9 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
         }
 
     U(m-1)=0.0;     //for the sace of printing
-   // U.print("Closed_form=");
 
-    ofstream myfile;
-    myfile.open ("Closed.txt");
-    for (int i=0; i<m; i++)
-       myfile <<i*dx<<" "<<U(i)<<endl;
-       myfile.close();
+    Initialize data;
+    data.print_out("Closed.txt", U, m, dx);
 
    return;
 }

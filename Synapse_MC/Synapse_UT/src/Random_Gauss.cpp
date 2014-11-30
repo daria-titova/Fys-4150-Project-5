@@ -26,6 +26,5 @@ double rand_gauss::rand(){
       double random_number=distribution(generator);
 
       return random_number;
-      //return 0;
     }
 

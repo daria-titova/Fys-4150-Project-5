@@ -5,41 +5,20 @@
 #include <Closed_form.h>
 #include <Cra-Nic.h>
 #include <Mon-Car.h>
-
+#include <initialize.h>
 using namespace arma;
 using namespace std;
 
 int main()
 {
     int n, m;
-    double a=0.0, b=1.0, t_begin=0.0, t_final;
-    cout<<"Insert the number of steps in time"<<endl<<"n=";
-    cin>>n;
-    cout<<"Insert the end of the interval in time"<<endl<<"t_final=";
-    cin>>t_final;
-    cout<<"Insert the number of steps for position"<<endl<<"m=";
-    cin>>m;
+    double t_final, dt, dx, alpha;
 
-    //define steps for t and x:
-    double dt=(t_final-t_begin)/(n-1);
-    double dx=(b-a)/(m-1);
-    double alpha=dt/(dx*dx);
-    cout<<"alpha="<<alpha<<endl;
-    cout<<"dt="<<dt<<endl;
-    cout<<"dx="<<dx<<endl;
-
-    //create array U
-    mat U(n,m);
-
-    //boundary conditions
-    U.col(0).ones();
-    U.col(m-1).zeros();
-    //initial conditions
-    U.row(0).zeros();
+    Initialize variables;
+    variables.insert(n, m, t_final, dt, dx, alpha);
 
     vec V_Ex(m), V_Im(m), V_CN(m), V_MC(m);
-    for (int i=0; i<m; i++)
-    V_Ex(i)=U(0,i);    //initial condition, t=0;
+    V_Ex.zeros();    //initial condition, t=0;
     V_Im.zeros();
     V_CN.zeros();
     V_MC.zeros();
@@ -53,21 +32,11 @@ int main()
     Crank_Nicolson result;
    // result.Crank_Nicolson_Scheme(V_CN, alpha, n, m, dx);
 
-    Monte_Carlo dies;
-    dies.Monte_Carlo_Algo(n, dt);
-
     Monte_Carlo flip;
-    flip.Monte_Carlo_Gauss_boxes(n, dt);
+    flip.Monte_Carlo_Gauss_vector(n, dt);
 
-    Monte_Carlo one_more;
-    one_more.Monte_Carlo_Gauss_vector(n, dt);
-
-
-    Closed_form test;
-   // test.Closed_form_solution(n, m, t_final, dx);
-
-    cout<<"The end"<<endl;
-    cout<<"End MC"<<endl;
+    Closed_form plot;
+   // plot.Closed_form_solution(n, m, t_final, dx);
 
     return 0;
 }

@@ -61,7 +61,7 @@ int main()
    // method.Explicit_Scheme(U_Ex, alpha, n/20, m, dx, t_final);
 
     Implicit solve;
-    solve.Implicit_Scheme(U_Im, alpha, n, m, dx, t_final);
+   // solve.Implicit_Scheme(U_Im, alpha, n, m, dx, t_final);
 
     Crank_Nicolson result;
    // result.Crank_Nicolson_Scheme(V_CN, alpha, n, m, dx);
@@ -72,7 +72,7 @@ int main()
 
 
     Closed_form test;
-   // test.Closed_form_solution(n, m, t_final, dx);
+    test.Closed_form_solution(n, m, t_final, dx);
 
 
     return 0;

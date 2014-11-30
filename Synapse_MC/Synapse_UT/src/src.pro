@@ -10,8 +10,8 @@ SOURCES += tridiag.cpp \
     Explicit.cpp \
     Implicit.cpp \
     Mon-Car.cpp \
-    random.cpp \
-    Random_Gauss.cpp
+    Random_Gauss.cpp \
+    Initialize.cpp
 QMAKE_CXXFLAGS += -std=c++0x
 HEADERS += tridiag.h \
     Closed_form.h \
@@ -19,6 +19,6 @@ HEADERS += tridiag.h \
     Explicit.h \
     Implicit.h \
     Mon-Car.h \
-    random.h \
-    Random_Gauss.h
+    Random_Gauss.h \
+    initialize.h
 
