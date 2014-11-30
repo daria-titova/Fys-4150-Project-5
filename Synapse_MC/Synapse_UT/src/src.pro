@@ -12,7 +12,6 @@ SOURCES += tridiag.cpp \
     Mon-Car.cpp \
     Random_Gauss.cpp \
     Initialize.cpp
-QMAKE_CXXFLAGS += -std=c++0x
 HEADERS += tridiag.h \
     Closed_form.h \
     Cra-Nic.h \
@@ -21,4 +20,7 @@ HEADERS += tridiag.h \
     Mon-Car.h \
     Random_Gauss.h \
     initialize.h
+QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -fopenmp
+LIBS += -fopenmp
 

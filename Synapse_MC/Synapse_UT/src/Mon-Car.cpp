@@ -5,6 +5,7 @@
 #include <vector>
 #include <Random_Gauss.h>
 #include <initialize.h>
+#include <omp.h>
 using std::vector;
 using namespace std;
 using namespace arma;
@@ -14,6 +15,10 @@ Monte_Carlo::Monte_Carlo(){}
 
 void Monte_Carlo::Monte_Carlo_boxes(int n, double dt)
 {
+
+/*#pragma omp parallel num_threads(1)
+    {cout<<"Lev durak, ne hochet pomogat' kisushe"<<endl;}*/
+
     int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
@@ -73,7 +78,7 @@ return;}
 
 void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 {
-    int N=10; //the number of particles in x_0
+    int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
@@ -83,43 +88,21 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 
     int time=0;
     while (time < n) {
-
+#pragma omp parallel for num_threads(4)
         for(int i = 0; i < u.size(); ++i)
         { //epsilon is random [0;1]
             double epsilon = (double)((double)rand() / (RAND_MAX));
             if (epsilon <= 0.5) {
 
-                  if (u[i]==0.0) {
-                      u[i]+=0;
-                  } else {
-                      if ((u[i]-lo)<=0.0)
-                      {   u.erase(u.begin()+(i));
-                          i=i-1;
-                      }
-                      else
-                      {   u.insert(u.begin(), u[i]-lo);
-                          u.erase(u.begin()+(i+1));
-                           }
-                  }
+                Monte_Carlo make;
+                make.negative_move(u, i, lo);
+
             } else {
-                if ((u[i]+lo)>=1.0)
-                {
-                    u.erase(u.begin()+(i));
-                    i-=1;
-                }
-                else {
-                    if (u[i]==0.0) {
-                        u.insert(u.begin(), u[i]+lo);
-                       // u.push_back(u[i]+lo);
-                        i+=1;
-                        }
-                    else
-                    {
-                        //u.push_back(u[i]+lo);
-                        u.insert(u.begin(), u[i]+lo);
-                        u.erase(u.begin()+(i+1));
-                        }
-                }}  }
+
+                Monte_Carlo jump;
+                jump.positive_move(u, i, lo);
+
+            }  }
              time++; }
 
        ofstream myfile;
@@ -209,7 +192,7 @@ return;}
 
 void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
 {
-    int N=2000; //the number of particles in x_0
+    int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
@@ -228,7 +211,11 @@ void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
 
             if ((epsilon <= 0.5 && l>=0.0) || (epsilon > 0.5 && l<0.0)){
 
-                  if (u[i]==0.0) {
+                l=fabs(l);
+                Monte_Carlo make;
+                make.negative_move(u, i, l);
+
+                /*  if (u[i]==0.0) {
                       u[i]+=0;
                   } else {
                       if ((u[i]-fabs(l))<=0.0)
@@ -241,9 +228,15 @@ void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
                           u.erase(u.begin()+(i+1));
 
                            }
-                  }
+                  } */ //stop
 
-            } else { if ((u[i]+l)>=1.0)
+            } else {
+
+              /*  l=fabs(l);
+                Monte_Carlo jump1;
+                jump1.positive_move(u, i, l);*/
+
+                if ((u[i]+fabs(l))>=1.0)
                 {
                     u.erase(u.begin()+(i));
                     i-=1;
@@ -251,20 +244,24 @@ void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
                 else {
                     if (u[i]==0.0) {
                         u.push_back(u[i]+fabs(l));
+                        //u.insert(u.begin(), u[i]+fabs(l));
                         }
                     else
                     {
 
-                        u.push_back(u[i]+fabs(l));
-                        u.erase(u.begin()+(i));
+                        //u.push_back(u[i]+fabs(l));
+                        u.insert(u.begin(), u[i]+fabs(l));
+                        u.erase(u.begin()+(i+1));
                         i-=1;
 
                         }
-                }}  }
+                }    //stop
+            }
+        }
              time++; }
 
        ofstream myfile;
-       myfile.open ("Mon-Car_Gauss_vec.txt");
+       myfile.open ("Mon-Car.txt");
        for (int i=0; i<u.size(); i++)
        {if (u[i]==0) u[i]+=0;
          else myfile <<u[i]<<endl;}
@@ -273,5 +270,39 @@ void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
 return;}
 
 
+void Monte_Carlo::negative_move(vector<double> &u, int &i, double &l)
+{if (u[i]==0.0) {
+        u[i]+=0;
+    } else {
+        if ((u[i]-l)<=0.0)
+        {   u.erase(u.begin()+(i));
+            i=i-1;
+        }
+        else
+        {   u.insert(u.begin(), u[i]-l);
+            u.erase(u.begin()+(i+1)); } }
+    return;
+}
+
+
+void Monte_Carlo::positive_move(vector<double> &u, int &i, double &l)
+{
+if ((u[i]+l)>=1.0)
+{
+    u.erase(u.begin()+(i));
+    i-=1;
+}
+else {
+    if (u[i]==0.0) {
+        u.insert(u.begin(), u[i]+l);
+        i+=1;
+        }
+    else
+    {
+        u.insert(u.begin(), u[i]+l);
+        u.erase(u.begin()+(i+1));
+        }
+}
+return;}
 
 

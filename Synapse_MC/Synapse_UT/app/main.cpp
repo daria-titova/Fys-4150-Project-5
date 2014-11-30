@@ -33,7 +33,7 @@ int main()
    // result.Crank_Nicolson_Scheme(V_CN, alpha, n, m, dx);
 
     Monte_Carlo flip;
-    flip.Monte_Carlo_Gauss_vector(n, dt);
+    flip.Monte_Carlo_vector(n, dt);
 
     Closed_form plot;
    // plot.Closed_form_solution(n, m, t_final, dx);
