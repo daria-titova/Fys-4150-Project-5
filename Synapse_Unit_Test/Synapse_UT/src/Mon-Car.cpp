@@ -9,6 +9,101 @@ using namespace arma;
 
 Monte_Carlo::Monte_Carlo(){}
 
+void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
+{
+    int N=1000; //the number of particles in x_0
+    double D=1.0;
+    double lo=sqrt(2*D*dt);
+    cout<<"lo="<<lo<<endl;
+    cout<<"m="<<1/lo<<endl;  //the number of boxes for the histogram
+
+    vector<double> x(N,0);
+    vector<double> y(N,0);
+
+    double x_temp, y_temp;
+
+    int time=0;
+    while (time < n) {
+
+//#pragma omp parallel num_threads(2)
+
+        for(int i = 0; i < x.size(); i++)
+        { //epsilon is random from [0;1]
+            double epsilon_x = (double)((double)rand() / (RAND_MAX));
+            double epsilon_y = (double)((double)rand() / (RAND_MAX));
+
+            x_temp=x[i];
+            y_temp=y[i];
+
+            if (epsilon_x <= 0.5) {
+                x.insert(x.begin(), x[i]-lo);
+                x.erase(x.begin()+(i+1));
+            } else {
+                x.insert(x.begin(), x[i]+lo);
+                x.erase(x.begin()+(i+1));
+            }
+
+            if (epsilon_y <= 0.5) {
+                y.insert(y.begin(), y[i]-lo);
+                y.erase(y.begin()+(i+1));
+            } else {
+                y.insert(y.begin(), y[i]+lo);
+                y.erase(y.begin()+(i+1));
+            }
+
+            if (x[0]<=0.0 || y[0]<=0 || x[0]>=1.0 || y[0]>=1.0)
+            {x.erase(x.begin());
+             y.erase(y.begin());}
+
+            if (x_temp==0.0 || y_temp==0.0 || y_temp==1.0)
+            {x.insert(x.begin(), x_temp);
+             y.insert(y.begin(), y_temp);}
+        }
+             time++; }
+
+       ofstream myfile;
+       myfile.open ("Mon-Car.txt");
+       for (int i=0; i<x.size(); i++)
+          { myfile <<x[i]<<" "<<y[i]<<endl;}
+       myfile.close();
+return;}
+
+
+/*void Monte_Carlo::negative_move(vector<double> &u, int &i, double &l)
+{if (u[i]==0.0) {
+        u[i]+=0;
+    } else {
+        if ((u[i]-l)<=0.0)
+        {   u.erase(u.begin()+(i));
+            i=i-1;
+        }
+        else
+        {   u.insert(u.begin(), u[i]-l);
+            u.erase(u.begin()+(i+1)); } }
+    return;
+}
+
+
+void Monte_Carlo::positive_move(vector<double> &u, int &i, double &l)
+{
+    if (u[i]==0.0) { if (l>=1.0) u[i]+=0;
+                    else { u.insert(u.begin(), u[i]+l);
+                          i+=1;} }
+    else {
+        if ((u[i]+l)>=1.0)    //was >=
+        {   u.erase(u.begin()+(i));
+            i-=1;}
+        else {
+            u.insert(u.begin(), u[i]+l);
+            u.erase(u.begin()+(i+1));
+            }}
+return;}*/
+
+
+
+
+
+
 void Monte_Carlo::Monte_Carlo_boxes(int n, double dt)
 {
     cout<<"Start MC"<<endl;

@@ -6,7 +6,6 @@ TEMPLATE = lib
 TARGET = myapp
 SOURCES += tridiag.cpp \
     Closed_form.cpp \
-    Cra-Nic.cpp \
     Explicit.cpp \
     Implicit.cpp \
     Mon-Car.cpp \
@@ -16,7 +15,6 @@ QMAKE_CXXFLAGS+= -openmp
 QMAKE_LFLAGS +=  -openmp
 HEADERS += tridiag.h \
     Closed_form.h \
-    Cra-Nic.h \
     Explicit.h \
     Implicit.h \
     Mon-Car.h \

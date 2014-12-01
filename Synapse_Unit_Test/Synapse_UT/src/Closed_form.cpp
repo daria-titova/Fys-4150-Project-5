@@ -19,8 +19,8 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
     //when t<<1,
     //viz. to kill the exponent in order to get steady-state
     //
-    if (t<1) k=10/t;
-    else k=100;
+    if (t<1) k=100/t;
+    else k=10;
 
 
     for (int i=0; i<m; i++){

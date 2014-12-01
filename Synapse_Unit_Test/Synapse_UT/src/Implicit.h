@@ -11,7 +11,7 @@ class Implicit
     Implicit();
 
     //functions
-    void Implicit_Scheme (mat &U, double alpha, int n, int m, double dx, double t);
+    void Implicit_Scheme (double alpha, int m, double dx, double t);
 
 };
 
