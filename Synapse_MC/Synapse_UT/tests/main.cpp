@@ -4,6 +4,9 @@
 #include <Implicit.h>
 #include <Cra-Nic.h>
 #include <iostream>
+#include <Mon-Car.h>
+#include <vector>
+using std::vector;
 
 TEST(tridiagonal_solver) {
     mat a;
@@ -82,6 +85,51 @@ vec dif=abs(result-v);
 
 CHECK(dif.max() < 1e-3);}
 
+
+
+TEST(positiv_move){
+
+    double first[] = {0.0, 0.0, 0.0, 0.2, 0.3, 0.6, 0.8, 0.7, 1.0, 1.0, 0.5};
+    vector<double> v(first, first + sizeof(first) / sizeof(double) );
+
+    double second[] = {0.8, 0.7, 0.5, 0.5, 0.5, 0.0, 0.0, 0.0};
+    vector<double> result(second, second + sizeof(second) / sizeof(double) );
+
+Monte_Carlo solve;
+double l=0.5;
+for (int i=0; i<v.size(); i++)
+{ solve.positive_move(v, i, l);}
+
+vector <double> diff(result.size());
+double sum=0;
+for (int i=0; i<result.size(); i++)
+{diff[i]=abs(result[i]-v[i]);
+    sum+=diff[i];}
+
+CHECK(sum < 1e-3);}
+
+
+
+TEST(negativ_move){
+
+    double first[] = {0.0, 0.0, 0.0, 0.2, 0.3, 0.6, 0.8, 0.7, 1.0, 1.0, 0.5};
+    vector<double> v(first, first + sizeof(first) / sizeof(double) );
+
+    double second[] = {0.5, 0.5, 0.2, 0.3, 0.1, 0.0, 0.0, 0.0};
+    vector<double> result(second, second + sizeof(second) / sizeof(double) );
+
+Monte_Carlo solve;
+double l=0.5;
+for (int i=0; i<v.size(); i++)
+{ solve.negative_move(v, i, l);}
+
+vector <double> diff(result.size());
+double sum=0;
+for (int i=0; i<result.size(); i++)
+{diff[i]=abs(result[i]-v[i]);
+    sum+=diff[i];}
+
+CHECK(sum < 1e-3);}
 
 
 int main()
