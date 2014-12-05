@@ -23,28 +23,28 @@ void Implicit::Implicit_Scheme (double alpha, int m, double dx, double t)
     U_new=U;
     double diff=1.0;
 
-        while (k<=100*m && diff>0.000001){
-            diff=0.0;
-            for (int i=0; i<m; i++) {
-                for (int j=0; j<m-2; j++)
-                {if (i==0) { U_new(i,j+1)=(1/(1+4*alpha))*(alpha*(2*U_new(i+1,j+1)+U_new(i,j)+U_new(i,j+2))+U(i,j+1));}
+    while (k<=100*m && diff>0.000001){
+        diff=0.0;
+        for (int i=0; i<m; i++) {
+            for (int j=0; j<m-2; j++)
+            {if (i==0) { U_new(i,j+1)=(1/(1+4*alpha))*(alpha*(2*U_new(i+1,j+1)+U_new(i,j)+U_new(i,j+2))+U(i,j+1));}
                 else {if (i==m-1) {
-                            U_new(i,j+1)=(1/(1+4*alpha))*(alpha*(2*U_new(i-1,j+1)+U_new(i,j)+U_new(i,j+2))+U(i,j+1));}
-                        else
-                        {
-                            U_new(i,j+1)=(1/(1+4*alpha))*(alpha*(U_new(i-1,j+1)+U_new(i+1,j+1)+U_new(i,j)+U_new(i,j+2))+U(i,j+1));
-                            diff+=fabs(U(i,j+1)-U_new(i,j+1));
-                        }
+                        U_new(i,j+1)=(1/(1+4*alpha))*(alpha*(2*U_new(i-1,j+1)+U_new(i,j)+U_new(i,j+2))+U(i,j+1));}
+                    else
+                    {
+                        U_new(i,j+1)=(1/(1+4*alpha))*(alpha*(U_new(i-1,j+1)+U_new(i+1,j+1)+U_new(i,j)+U_new(i,j+2))+U(i,j+1));
+                        diff+=fabs(U(i,j+1)-U_new(i,j+1));
                     }
-                 }}
-            U=U_new;
-            k++;
-            diff=diff/pow((m),2.0);}
+                }
+            }}
+        U=U_new;
+        k++;
+        diff=diff/pow((m),2.0);}
 
 
 
 
-        /* for (int i=0; i<m; i++) {
+    /* for (int i=0; i<m; i++) {
              for (int j=0; j<m; j++) {
          if (i==0) U(i,j)=(1-j*dx)*exp(t);    //boundary condition
                        else{ if (i==(m-1)) U(i,j)=(1-j*dx)*exp(1+t);  //boundary condition
@@ -63,15 +63,15 @@ void Implicit::Implicit_Scheme (double alpha, int m, double dx, double t)
              diff=diff/pow((m),2.0);}*/
 
 
-        ofstream myfile;
-        myfile.open ("Implicit.txt");
-        for (int i=0; i<m; i++) {
-            for (int j=0; j<m; j++)
-                myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
-            myfile<<endl; }
-        myfile.close();
+    ofstream myfile;
+    myfile.open ("Implicit.txt");
+    for (int i=0; i<m; i++) {
+        for (int j=0; j<m; j++)
+            myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
+        myfile<<endl; }
+    myfile.close();
 
 
-   return;
+    return;
 }
 
