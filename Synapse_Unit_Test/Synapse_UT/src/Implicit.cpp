@@ -2,8 +2,8 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
-#include <tridiag.h>
 #include <omp.h>
+#include <Initialize.h>
 using namespace arma;
 using namespace std;
 
@@ -70,6 +70,10 @@ void Implicit::Implicit_Scheme (double alpha, int m, double dx, double t)
             myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
         myfile<<endl; }
     myfile.close();
+
+
+    Initialize data;
+    data.print_out("Implicit.txt", U, m, dx);
 
 
     return;

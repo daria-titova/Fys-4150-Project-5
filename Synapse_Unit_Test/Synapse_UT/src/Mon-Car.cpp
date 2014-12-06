@@ -9,6 +9,127 @@ using namespace arma;
 
 Monte_Carlo::Monte_Carlo(){}
 
+void Monte_Carlo::Monte_Carlo_vector_Gauss(int n, double dt)
+{
+    int N=100; //the number of particles in x_0
+    double D=1.0;
+    double lo=sqrt(2*D*dt);
+    int m=1/lo;
+    cout<<"lo="<<lo<<endl;
+    cout<<"m="<<m<<endl; //the number of boxes for the histogram
+
+    vector<double> x(N,0);
+    vector<double> y(N,0);
+    vec test_u(m);
+
+
+    double x_old, y_old;
+    double null=1e-15;
+    int time=0;
+
+    while (time < n) {
+        //#pragma omp parallel num_threads(2)
+        for(int i = 0; i < x.size(); i++)
+        { //epsilon is random from [0;1]
+            double epsilon_x = (double)((double)rand() / (RAND_MAX));
+            double epsilon_y = (double)((double)rand() / (RAND_MAX));
+
+            //rand_gauss rn;
+            rand_gauss rnx;
+            rand_gauss rny;
+            double rx=rnx.rand();
+            double ry=rny.rand();
+            double lx=lo*rx;
+            double ly=lo*ry;
+
+            x_old=x[i];
+            y_old=y[i];
+
+            if (epsilon_x <= 0.5) {
+                x.insert(x.begin(), x[i]-lx);
+                x.erase(x.begin()+(i+1));
+            } else {
+                x.insert(x.begin(), x[i]+lx);
+                x.erase(x.begin()+(i+1));
+            }
+            if (epsilon_y <= 0.5) {
+                y.insert(y.begin(), y[i]-ly);
+                y.erase(y.begin()+(i+1));
+            } else {
+                y.insert(y.begin(), y[i]+ly);
+                y.erase(y.begin()+(i+1));
+            }
+
+            double x_new =x[0];
+            double y_new =y[0];
+
+
+            if ((x_new<=null && x_new>=0.0) && (y_new>null && y_new<1.0))
+            {int k=y_new/lo;
+
+                if (test_u(k)<N)  //preserv N at (x=0; y)
+                test_u(k)+=1;
+            else {x.erase(x.begin());
+                  y.erase(y.begin());} }
+
+
+            if ((x_new<=null && x_new!=0.0) || x_new<0.0 || y_new<0.0 || (y_new<=null && y_new!=0.0)
+                    || x_new>=1.0 || y_new>=1.0 || ((x_new<=null && x_new>=0.0) && (y_new<=null && y_new>=0.0)) )
+            {   x.erase(x.begin());
+                y.erase(y.begin());
+                i-=1;
+
+           }
+
+            if ((x_old<=null && x_old>=0.0))
+            {   x.insert(x.begin(), x_old);
+                y.insert(y.begin(), y_old);
+                i+=1;}
+
+            if ((y_new<0.0 || (y_new<=null && y_new!=0.0)) && (x_new>null && x_new<1.0) )
+            {   x.insert(x.begin(), x_new);
+                y.insert(y.begin(), y_new+1.0);
+            i+=1;}
+
+            if ((y_new>=1.0) && (x_new>null && x_new<1.0) )
+            {   x.insert(x.begin(), x_new);
+                y.insert(y.begin(), y_new-1.0);
+            i+=1;}
+
+
+        }
+        time++; }
+    ofstream myfile;
+    myfile.open ("Mon-Car.txt");
+    for (int i=0; i<x.size(); i++)
+    { if (x[i]<=null || y[i]<=null) x[i]+=0;
+        else
+            myfile <<x[i]<<" "<<y[i]<<endl;}
+    myfile.close();
+    return;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 {
     int N=100; //the number of particles in x_0
@@ -23,7 +144,7 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
     vec test_u(m);
 
 
-    double x_temp, y_temp;
+    double x_old, y_old;
     double null=1e-15;
     int time=0;
 
@@ -34,8 +155,8 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
             double epsilon_x = (double)((double)rand() / (RAND_MAX));
             double epsilon_y = (double)((double)rand() / (RAND_MAX));
 
-            x_temp=x[i];
-            y_temp=y[i];
+            x_old=x[i];
+            y_old=y[i];
 
             if (epsilon_x <= 0.5) {
                 x.insert(x.begin(), x[i]-lo);
@@ -73,27 +194,20 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 
            }
 
-            if ((x_temp<=null && x_temp>=0.0))
-            {   x.insert(x.begin(), x_temp);
-                y.insert(y.begin(), y_temp);
+            if ((x_old<=null && x_old>=0.0))
+            {   x.insert(x.begin(), x_old);
+                y.insert(y.begin(), y_old);
                 i+=1;}
 
             if ((y_new<0.0 || (y_new<=null && y_new!=0.0)) && (x_new>null && x_new<1.0) )
             {   x.insert(x.begin(), x_new);
                 y.insert(y.begin(), y_new+1.0);
-                //x.insert(x.begin(), x_temp);
-                //y.insert(y.begin(), y_temp);
             i+=1;}
 
             if ((y_new>=1.0) && (x_new>null && x_new<1.0) )
             {   x.insert(x.begin(), x_new);
                 y.insert(y.begin(), y_new-1.0);
-                //x.insert(x.begin(), x_temp);
-                //y.insert(y.begin(), y_temp);
             i+=1;}
-
-
-
 
 
             /* if ((x[0]<=null && x[0]!=0.0) || x[0]<0.0 || y[0]<0.0 || (y[0]<=null && y[0]!=0.0)

@@ -4,28 +4,17 @@
 #include <Implicit.h>
 #include <Closed_form.h>
 #include <Mon-Car.h>
-
+#include <Initialize.h>
 using namespace arma;
 using namespace std;
 
 int main()
 {
     int n, m;
-    double a=0.0, b=1.0, t_begin=0.0, t_final;
-    cout<<"Insert the number of steps in time"<<endl<<"n=";
-    cin>>n;
-    cout<<"Insert the end of the interval in time"<<endl<<"t_final=";
-    cin>>t_final;
-    cout<<"Insert the number of steps for position"<<endl<<"m=";
-    cin>>m;
+    double t_final, dx, dt, alpha;
 
-    //define steps for t and x:
-    double dt=(t_final-t_begin)/(n-1);
-    double dx=(b-a)/(m-1);
-    double alpha=dt/(dx*dx);
-    cout<<"alpha="<<alpha<<endl;
-    cout<<"dt="<<dt<<endl;
-    cout<<"dx=dy="<<dx<<endl;
+    Initialize variables;
+    variables.insert(n, m, t_final, dt, dx, alpha);
 
     //create array U
     mat U(m,m);
@@ -36,7 +25,7 @@ int main()
             U(i,j)=(1-j*dx)*exp(i*dx);}}*/
 
 
-    mat U_Ex(m,m), U_Im(m,m), U_CN(m,m), U_MC(m,m);
+    mat U_Ex(m,m), U_Im(m,m), U_MC(m,m);
     U.zeros();//initial condition, t=0;
     U_Ex=U;
     U_Im=U;
@@ -49,7 +38,7 @@ int main()
    // solve.Implicit_Scheme(alpha, m, dx, t_final);
 
     Monte_Carlo flip;
-    flip.Monte_Carlo_vector(n, dt);
+    flip.Monte_Carlo_vector_Gauss(n, dt);
 
     Closed_form test;
    // test.Closed_form_solution(n, m, t_final, dx);

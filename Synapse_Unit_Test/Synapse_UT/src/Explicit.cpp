@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <Initialize.h>
 using namespace arma;
 using namespace std;
 
@@ -49,6 +50,10 @@ void Explicit::Explicit_Scheme (mat &U, double alpha, int n, int m, double dx, d
             myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
         myfile<<endl; }
     myfile.close();
+
+    Initialize data;
+    data.print_out("Explicit.txt", U, m, dx);
+
 
     return;
 }

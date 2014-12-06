@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <armadillo>
+#include <Initialize.h>
 using namespace arma;
 using namespace std;
 
@@ -47,6 +48,9 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
             myfile <<i*dx<<" "<<j*dx<<" "<<U(i,j)<<endl;
         myfile<<endl;   }
     myfile.close();
+
+    Initialize data;
+    data.print_out("Closed.txt", U, m, dx);
 
 }
 
