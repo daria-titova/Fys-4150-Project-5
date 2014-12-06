@@ -11,16 +11,20 @@ Monte_Carlo::Monte_Carlo(){}
 
 void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 {
-    int N=10; //the number of particles in x_0
+    int N=100; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
+    int m=1/lo;
     cout<<"lo="<<lo<<endl;
-    cout<<"m="<<1/lo<<endl; //the number of boxes for the histogram
+    cout<<"m="<<m<<endl; //the number of boxes for the histogram
 
     vector<double> x(N,0);
     vector<double> y(N,0);
+    vec test_u(m);
+
 
     double x_temp, y_temp;
+    double null=1e-15;
     int time=0;
 
     while (time < n) {
@@ -47,29 +51,80 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
                 y.insert(y.begin(), y[i]+lo);
                 y.erase(y.begin()+(i+1));
             }
-            if (x[0]<0.0 || y[0]<0 || x[0]>=1.0 || y[0]>1.0 || (x[0]==0 && y[0]==0))
-            {   double x_new =x[0];
-                double y_new =y[0];
-                x.erase(x.begin());
+
+            double x_new =x[0];
+            double y_new =y[0];
+
+
+            if ((x_new<=null && x_new>=0.0) && (y_new>null && y_new<1.0))
+            {int k=y_new/lo;
+
+                if (test_u(k)<N)  //preserv N at (x=0; y)
+                test_u(k)+=1;
+            else {x.erase(x.begin());
+                  y.erase(y.begin());} }
+
+
+            if ((x_new<=null && x_new!=0.0) || x_new<0.0 || y_new<0.0 || (y_new<=null && y_new!=0.0)
+                    || x_new>=1.0 || y_new>=1.0 || ((x_new<=null && x_new>=0.0) && (y_new<=null && y_new>=0.0)) )
+            {   x.erase(x.begin());
                 y.erase(y.begin());
+                i-=1;
 
-                if (x_new==0 && (y_new<=1.0 && y_new>0.0))
-                {y.insert(y.begin(), y_new);
-                    x.insert(x.begin(), x_new);}}
-            else {if (x[0]<1.0) i+=1;}
+           }
 
-            if ((x_temp==0.0 && y_temp==0.0) || y_temp==0.0 || y_temp==1.0)
-            {x.insert(x.begin(), x_temp);
-                y.insert(y.begin(), y_temp);}
-            else {i-=1;}
+            if ((x_temp<=null && x_temp>=0.0))
+            {   x.insert(x.begin(), x_temp);
+                y.insert(y.begin(), y_temp);
+                i+=1;}
+
+            if ((y_new<0.0 || (y_new<=null && y_new!=0.0)) && (x_new>null && x_new<1.0) )
+            {   x.insert(x.begin(), x_new);
+                y.insert(y.begin(), y_new+1.0);
+                //x.insert(x.begin(), x_temp);
+                //y.insert(y.begin(), y_temp);
+            i+=1;}
+
+            if ((y_new>=1.0) && (x_new>null && x_new<1.0) )
+            {   x.insert(x.begin(), x_new);
+                y.insert(y.begin(), y_new-1.0);
+                //x.insert(x.begin(), x_temp);
+                //y.insert(y.begin(), y_temp);
+            i+=1;}
+
+
+
+
+
+            /* if ((x[0]<=null && x[0]!=0.0) || x[0]<0.0 || y[0]<0.0 || (y[0]<=null && y[0]!=0.0)
+              || x[0]>1.0 || y[0]>1.0 || ((x[0]<=null && x[0]>=0.0) && (y[0]<=null && y[0]>=0.0)))
+            {   x.erase(x.begin());
+                y.erase(y.begin());
+                i-=1;
+
+                if (y_new>1.0 && (x_new<1))
+                {   y.insert(y.begin(), y_temp);
+                    x.insert(x.begin(), x_temp);
+                    i+=1;}
+                }
+
+
+            if (((x_temp<=null && x_temp>=0.0) && (y_temp<=null && y_temp>=0.0)) ||
+                  (y_temp<=null && y_temp>=0.0 && x_new<1) || (x_temp<=null && x_temp>=0.0))   //y[0]>1.0
+            {   x.insert(x.begin(), x_temp);
+                y.insert(y.begin(), y_temp);
+                i+=1;}*/
+
+
+
         }
         time++; }
     ofstream myfile;
     myfile.open ("Mon-Car.txt");
     for (int i=0; i<x.size(); i++)
-    { //if (x[i]==0 && y[i]==0) x[i]+=0;
-      //  else
-        myfile <<x[i]<<" "<<y[i]<<endl;}
+    { if (x[i]<=null || y[i]<=null) x[i]+=0;
+        else
+            myfile <<x[i]<<" "<<y[i]<<endl;}
     myfile.close();
     return;}
 
