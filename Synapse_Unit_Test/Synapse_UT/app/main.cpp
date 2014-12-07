@@ -16,6 +16,10 @@ int main()
     Initialize variables;
     variables.insert(n, m, t_final, dt, dx, alpha);
 
+    cout<<"alpha="<<alpha<<endl;
+    cout<<"dt="<<dt<<endl;
+    cout<<"dx=dy="<<dx<<endl;
+
     //create array U
     mat U(m,m);
 
