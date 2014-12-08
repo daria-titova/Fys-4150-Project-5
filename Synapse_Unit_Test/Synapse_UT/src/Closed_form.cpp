@@ -28,8 +28,8 @@ void Closed_form::Closed_form_solution(int n, int m, double t, double dx)
         for (int j=0; j<m; j++) {
             double sum=0.0;
             for (int l=0; l<k-1; l++) {
-                for (int p=0; p<k-1; p++)
-                    sum=sum+(2/((l+1)*M_PI))*sin((l+1)*M_PI*i*dx)*exp(-M_PI*M_PI*((l+1)*(l+1)+(p+1)*(p+1))*t);}
+               // for (int p=0; p<k-1; p++)
+                    sum=sum+(2/((l+1)*M_PI))*sin((l+1)*M_PI*i*dx)*exp(-M_PI*M_PI*(2*(l+1)*(l+1))*t);}
             U(i,j)=1.0-i*dx-sum;
         }}
 

@@ -36,16 +36,16 @@ int main()
     U_MC=U;
 
     Explicit method;
-   // method.Explicit_Scheme(U_Ex, alpha, n, m, dx, t_final);
+  //  method.Explicit_Scheme(U_Ex, alpha, n, m, dx, t_final);
 
     Implicit solve;
    // solve.Implicit_Scheme(alpha, m, dx, t_final);
 
     Monte_Carlo flip;
-    flip.Monte_Carlo_vector_Gauss(n, dt);
+    flip.Monte_Carlo_boxes_Gauss(n, dt);
 
     Closed_form test;
-   // test.Closed_form_solution(n, m, t_final, dx);
+  //  test.Closed_form_solution(n, m, t_final, dx);
 
 
     return 0;

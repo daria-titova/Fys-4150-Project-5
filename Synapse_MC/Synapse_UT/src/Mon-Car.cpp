@@ -54,7 +54,7 @@ void Monte_Carlo::Monte_Carlo_vector(int n, double dt)
 
 void Monte_Carlo::Monte_Carlo_Gauss_vector(int n, double dt)
 {
-    int N=100; //the number of particles in x_0
+    int N=1000; //the number of particles in x_0
     double D=1.0;
     double lo=sqrt(2*D*dt);
     cout<<"lo="<<lo<<endl;
