@@ -314,7 +314,7 @@ void Monte_Carlo::Monte_Carlo_boxes(int n, double dt)
 void Monte_Carlo::Monte_Carlo_boxes_Gauss(int n, double dt)
 {
     cout<<"Start MC"<<endl;
-    int N=100; //the number of particles in (x=0; y=0)
+    int N=10; //the number of particles in (x=0; y=0)
     double D=1.0;
     double lo=sqrt(2*D*dt);
     int m=1/lo;
